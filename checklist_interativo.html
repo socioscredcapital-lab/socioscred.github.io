@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist de Análise - Socios Cred</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0066CC 0%, #10B981 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            border-bottom: 3px solid #0066CC;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #0066CC;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #10B981;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .checklist-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .checklist-item:hover {
+            border-color: #0066CC;
+            background: #f8f9ff;
+        }
+
+        .checklist-item.checked {
+            border-color: #10B981;
+            background: #f0fdf4;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #0066CC;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .item-instruction {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .options-group {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .option:hover {
+            border-color: #0066CC;
+            background: #f8f9ff;
+        }
+
+        .option.selected {
+            border-color: #10B981;
+            background: #f0fdf4;
+        }
+
+        .option input[type="radio"] {
+            cursor: pointer;
+            accent-color: #0066CC;
+            pointer-events: none;
+        }
+
+        .option-label {
+            font-size: 13px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .scoring-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f0f7ff 0%, #f0fdf4 100%);
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #0066CC;
+        }
+
+        .scoring-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: 700;
+            color: #0066CC;
+            margin-bottom: 10px;
+        }
+
+        .score-total {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        .decision {
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .decision.aprovar {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #10B981;
+        }
+
+        .decision.analise {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        .decision.analise-profunda {
+            background: #ffe5e5;
+            color: #c3190a;
+            border: 2px solid #ff9999;
+        }
+
+        .decision.rejeitar {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #e74c3c;
+        }
+
+        .limite {
+            margin-top: 12px;
+            font-size: 13px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            color: #555;
+        }
+
+        .reset-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #999;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .reset-button:hover {
+            background: #666;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #0066CC;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #1565c0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Checklist de Análise</h1>
+            <p>Socios Cred - Verificação de Candidaturas</p>
+        </div>
+
+        <div class="info-box">
+            💡 <strong>Instrução:</strong> Marque cada critério conforme verificar. A pontuação é calculada automaticamente.
+        </div>
+
+        <div id="checklistContainer"></div>
+
+        <div class="scoring-section">
+            <div class="scoring-title">Pontuação Final</div>
+            <div class="score-display" id="scoreDisplay">0</div>
+            <div class="score-total" id="scoreTotal">0 / 9 critérios atendidos</div>
+            <div class="decision" id="decisionDisplay">Preencha os critérios acima</div>
+            <div class="limite" id="limiteDisplay"></div>
+            <button class="reset-button" onclick="resetChecklist()">Limpar Tudo</button>
+        </div>
+    </div>
+
+    <script>
+        const criterios = [
+            {
+                numero: 1,
+                titulo: "Valor solicitado ≤ 30% da renda mensal",
+                instrucao: "Calcular: Valor solicitado ÷ Renda mensal. Deve ser ≤ 30%. Exemplo: R$600 ÷ R$2.000 = 30% ✅"
+            },
+            {
+                numero: 2,
+                titulo: "Número do contato familiar = Chave Pix",
+                instrucao: "Em qualquer banco, verificar se o número informado como contato familiar aparece como chave Pix com o mesmo nome informado."
+            },
+            {
+                numero: 3,
+                titulo: "CEP corresponde ao endereço informado",
+                instrucao: "Pesquisar o CEP no Google. Verificar se a rua/logradouro está correta naquele CEP."
+            },
+            {
+                numero: 4,
+                titulo: "Foto da residência corresponde ao Google Maps",
+                instrucao: "Abrir Google Maps, pesquisar o endereço, ativar Street View. Comparar com foto enviada (número, fachada)."
+            },
+            {
+                numero: 5,
+                titulo: "Comprovante de residência com data ≤ 90 dias",
+                instrucao: "Conferir a data do comprovante. Hoje - Data comprovante = dias. Deve ser ≤ 90 dias."
+            },
+            {
+                numero: 6,
+                titulo: "Comprovante de residência em nome do cliente",
+                instrucao: "Verificar se o nome no comprovante corresponde ao nome no CPF informado."
+            },
+            {
+                numero: 7,
+                titulo: "CNPJ da empresa que trabalha ou é autônomo",
+                instrucao: "Se tem empresa: buscar CNPJ no Google, verificar se existe e está ativo. Se é autônomo: marcar a opção abaixo.",
+                tipo: "cnpj"
+            },
+            {
+                numero: 8,
+                titulo: "Tempo de emprego no cargo atual",
+                instrucao: "Selecione o tempo de emprego para definir o limite máximo de crédito.",
+                tipo: "tempo"
+            },
+            {
+                numero: 9,
+                titulo: "Perfil do Instagram existe com foto de perfil",
+                instrucao: "Buscar o perfil @[instagram] informado. Verificar: perfil existe? tem foto de perfil? a foto corresponde ao cliente? perfil é público?"
+            }
+        ];
+
+        // Renderizar checklist
+        function renderChecklist() {
+            const container = document.getElementById('checklistContainer');
+            container.innerHTML = criterios.map((item, index) => {
+                let html = `
+                    <div class="checklist-item" id="item-${index}">
+                        <div class="item-header" onclick="toggleCheckbox(${index})">
+                            <input type="checkbox" class="checkbox" id="check-${index}" onchange="updateScore()" ${item.tipo ? 'disabled' : ''}>
+                            <div class="item-content">
+                                <div class="item-title">${item.numero}. ${item.titulo}</div>
+                                <div class="item-instruction">${item.instrucao}</div>
+                            </div>
+                        </div>
+                `;
+                
+                // Se for item tempo de emprego, adicionar seletor
+                if (item.tipo === 'tempo') {
+                    html += `
+                        <div class="options-group">
+                            <div class="option" onclick="selectTempo(0, ${index}); return false;">
+                                <input type="radio" name="tempo-${index}" id="tempo-0-${index}">
+                                <label for="tempo-0-${index}" class="option-label">🔴 Menos de 6 meses (máx 15% renda)</label>
+                            </div>
+                            <div class="option" onclick="selectTempo(1, ${index}); return false;">
+                                <input type="radio" name="tempo-${index}" id="tempo-1-${index}">
+                                <label for="tempo-1-${index}" class="option-label">🟠 6 meses a 1 ano (máx 20% renda)</label>
+                            </div>
+                            <div class="option" onclick="selectTempo(2, ${index}); return false;">
+                                <input type="radio" name="tempo-${index}" id="tempo-2-${index}">
+                                <label for="tempo-2-${index}" class="option-label">🟡 1 a 3 anos (máx 25% renda)</label>
+                            </div>
+                            <div class="option" onclick="selectTempo(3, ${index}); return false;">
+                                <input type="radio" name="tempo-${index}" id="tempo-3-${index}">
+                                <label for="tempo-3-${index}" class="option-label">🟢 Mais de 3 anos (máx 30% renda)</label>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Se for item CNPJ, adicionar opções
+                if (item.tipo === 'cnpj') {
+                    html += `
+                        <div class="options-group">
+                            <div class="option" onclick="selectCnpj(0, ${index}); return false;">
+                                <input type="radio" name="cnpj-${index}" id="cnpj-0-${index}">
+                                <label for="cnpj-0-${index}" class="option-label">✅ CNPJ da empresa existe e está ativo</label>
+                            </div>
+                            <div class="option" onclick="selectCnpj(1, ${index}); return false;">
+                                <input type="radio" name="cnpj-${index}" id="cnpj-1-${index}">
+                                <label for="cnpj-1-${index}" class="option-label">✅ Cliente é autônomo (sem CNPJ)</label>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                html += `</div>`;
+                return html;
+            }).join('');
+        }
+
+        function selectTempo(tempoIndex, itemIndex) {
+            const radio = document.getElementById(`tempo-${tempoIndex}-${itemIndex}`);
+            
+            // Se clicar no mesmo que já está marcado, desmarcar
+            if (radio.checked) {
+                radio.checked = false;
+                document.getElementById(`check-${itemIndex}`).checked = false;
+            } else {
+                // Se clicar em outro, marcar este e desmarcar os outros
+                document.querySelectorAll(`[name="tempo-${itemIndex}"]`).forEach(r => r.checked = false);
+                radio.checked = true;
+                document.getElementById(`check-${itemIndex}`).checked = true;
+            }
+            
+            // Atualizar visual das opções
+            document.querySelectorAll(`[name="tempo-${itemIndex}"]`).forEach((r) => {
+                const opt = r.closest('.option');
+                if (r.checked) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+            
+            updateScore();
+        }
+
+        function selectCnpj(cnpjIndex, itemIndex) {
+            const radio = document.getElementById(`cnpj-${cnpjIndex}-${itemIndex}`);
+            
+            // Se clicar no mesmo que já está marcado, desmarcar
+            if (radio.checked) {
+                radio.checked = false;
+                document.getElementById(`check-${itemIndex}`).checked = false;
+            } else {
+                // Se clicar em outro, marcar este e desmarcar os outros
+                document.querySelectorAll(`[name="cnpj-${itemIndex}"]`).forEach(r => r.checked = false);
+                radio.checked = true;
+                document.getElementById(`check-${itemIndex}`).checked = true;
+            }
+            
+            // Atualizar visual das opções
+            document.querySelectorAll(`[name="cnpj-${itemIndex}"]`).forEach((r) => {
+                const opt = r.closest('.option');
+                if (r.checked) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+            
+            updateScore();
+        }
+
+        // Toggle checkbox (apenas para items sem múltipla escolha)
+        function toggleCheckbox(index) {
+            // Items 7 (índice 6) e 8 (índice 7) não podem ser marcados diretamente
+            if (index === 6 || index === 7) {
+                return;
+            }
+            
+            const checkbox = document.getElementById(`check-${index}`);
+            checkbox.checked = !checkbox.checked;
+            updateScore();
+        }
+
+        // Atualizar pontuação
+        function updateScore() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            const checked = Array.from(checkboxes).filter(c => c.checked).length;
+            
+            document.getElementById('scoreDisplay').textContent = checked;
+            document.getElementById('scoreTotal').textContent = `${checked} / 9 critérios atendidos`;
+
+            // Atualizar decisão
+            const decisionElement = document.getElementById('decisionDisplay');
+            const limiteElement = document.getElementById('limiteDisplay');
+            
+            decisionElement.className = 'decision';
+            
+            if (checked === 9) {
+                decisionElement.classList.add('aprovar');
+                decisionElement.innerHTML = '✅ APROVAR';
+                limiteElement.innerHTML = '<strong>Limite máximo:</strong> 30% da renda';
+            } else if (checked >= 7) {
+                decisionElement.classList.add('analise');
+                decisionElement.innerHTML = '🟡 ANÁLISE';
+                limiteElement.innerHTML = '<strong>Limite máximo:</strong> 25% da renda<br>⚠️ Revisar os critérios que falharam';
+            } else if (checked >= 5) {
+                decisionElement.classList.add('analise-profunda');
+                decisionElement.innerHTML = '⚠️ ANÁLISE PROFUNDA';
+                limiteElement.innerHTML = '<strong>Limite máximo:</strong> 20% da renda<br>⚠️ Resolver problemas antes de emprestar';
+            } else {
+                decisionElement.classList.add('rejeitar');
+                decisionElement.innerHTML = '❌ REJEITAR';
+                limiteElement.innerHTML = '<strong>Risco muito alto.</strong> Não emprestar.';
+            }
+            
+            // Atualizar visual dos items
+            checkboxes.forEach((checkbox, index) => {
+                const item = document.getElementById(`item-${index}`);
+                if (checkbox.checked) {
+                    item.classList.add('checked');
+                } else {
+                    item.classList.remove('checked');
+                }
+            });
+        }
+
+        // Limpar tudo
+        function resetChecklist() {
+            if (confirm('Deseja limpar todos os checkmarks?')) {
+                document.querySelectorAll('.checkbox').forEach(cb => cb.checked = false);
+                document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+                document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                updateScore();
+            }
+        }
+
+        // Inicializar
+        renderChecklist();
+        updateScore();
+    </script>
+</body>
+</html>
